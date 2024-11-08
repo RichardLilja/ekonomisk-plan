@@ -2,20 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --hsl-shb-black: 0 0% 13%;
+    --hsl-shb-white: 0 0% 100%;
+
+    --hsl-shb-gray-5: 0 0 96%;
+    --hsl-shb-gray-10: 0 0 91%;
+    --hsl-shb-gray-15: 0 0% 87%;
+    --hsl-shb-gray-62: 0 0% 46%;
+
+    --hsl-shb-hb1: 205 100% 32%;
+    --hsl-shb-hb2-light: 194 45% 94%;
+    --hsl-shb-hb4: 194 65% 55%;
+    --hsl-shb-hb5-light: 200 53% 87%;
+    --hsl-shb-hb6: 205 92% 20%;
+    --hsl-shb-hb8: 339 66% 63%;
+    --hsl-shb-hb9-light1: 30 20% 98%;
+    --hsl-shb-hb10: 7 65% 47%;
+
+    --background: var(--hsl-shb-hb9-light1);
+    --foreground: var(--hsl-shb-black);
+    --interactive: var(--hsl-shb-hb1);
+    --border: var(--hsl-shb-gray-15);
+    --danger: var(--hsl-shb-hb10);
+  }
+  body {
+    --font-sans: var(--font-roboto-regular);
+    --font-sans-bold: var(--font-roboto-bold);
+    --font-header-slab: var(--font-handelsbanken-slab-serif);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-shb-hb5-light text-foreground;
+    font-family: var(--font-sans), sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.highcharts-credits {
+  display: none;
 }
