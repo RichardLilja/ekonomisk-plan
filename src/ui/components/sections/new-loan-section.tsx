@@ -24,6 +24,11 @@ import {
 } from "../layout/table";
 import { sumInterestForAct, sumInterestForLoan } from "@/utils/interest";
 import { sumDebtForAct } from "@/utils/debt";
+import { calculateLoanToValueRatio } from "@/utils/loan";
+import { ruleHighAmortization } from "@/utils/act";
+import { ActRuleList, ManualActRule } from "../molecules/act-rule";
+import { ContractRules } from "./acts-section";
+import Switch from "../atoms/switch";
 
 export default function NewLoanSection({
   ref,
@@ -57,6 +62,7 @@ function NewActContainer({ act }: { act: Act }) {
       <div className="flex flex-col gap-3 p-6 pt-0">
         <Economy act={act} />
         <LoanToValue act={act} />
+        <AmortizationRules act={act} />
         <MortgageDeed act={act} />
         <div className="hidden md:block">
           <MortgageTable act={act} />
@@ -68,10 +74,11 @@ function NewActContainer({ act }: { act: Act }) {
           <MortgageTableSmall act={act} />
         </div>
         <Contract act={act} />
-        <div className="hidden md:block">
+        <ContractRules act={act} />
+        <div className="hidden lg:block">
           <LoanTable act={act} />
         </div>
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <h4 className="font-header-slab text-shb-title-5 pt-3 pb-3">Lån</h4>
           <LoanTableSmall act={act} />
         </div>
@@ -86,24 +93,40 @@ function Header({ act }: { act: Act }) {
   );
 
   return (
-    <header className="p-3">
-      <input
-        className="font-header-slab text-shb-title-4 text-left w-full p-3 hover:bg-shb-hb2-light rounded-lg"
-        type="text"
-        defaultValue={act.object}
-        onBlur={(event) => {
-          const newAct = { ...act };
-          newAct.object = event.target.value;
-          insertAct(newAct);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            event.currentTarget.blur();
-          }
-        }}
-      />
-    </header>
+    <>
+      <header className="p-3">
+        <input
+          className="font-header-slab text-shb-title-4 text-left w-full p-3 hover:bg-shb-hb2-light rounded-lg"
+          type="text"
+          defaultValue={act.object}
+          onBlur={(event) => {
+            const newAct = { ...act };
+            newAct.object = event.target.value;
+            insertAct(newAct);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              event.currentTarget.blur();
+            }
+          }}
+        />
+      </header>
+      <div className="p-6 pt-0">
+        <div className="px-6 py-3 border rounded-lg">
+          <Switch
+            justify="start"
+            label="Använd i ekonomiberäkningar"
+            checked={act.usedInCalculations}
+            onCheckedChange={(checked) => {
+              const newAct = { ...act };
+              newAct.usedInCalculations = checked;
+              insertAct(newAct);
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -119,14 +142,12 @@ function Economy({ act }: { act: Act }) {
         </li>
         <li className="lg:border-l lg:border-black lg:pl-12">
           <h4 className="text-shb-title-10">Kontantinsats</h4>
-          <span className="text-shb-title-5">
-            {numberWithSpaces(act.mortgageDeed)} SEK
-          </span>
+          <span className="text-shb-title-5"># SEK</span>
         </li>
         <li className="lg:border-l lg:border-black lg:pl-12">
           <h4 className="text-shb-title-10">Sökt belopp</h4>
           <span className="text-shb-title-5">
-            {numberWithSpaces(act.mortgageDeed)} SEK
+            {numberWithSpaces(sumDebtForAct(act))} SEK
           </span>
         </li>
       </ul>
@@ -144,7 +165,7 @@ function LoanToValue({ act }: { act: Act }) {
         <li className="lg:min-w-40">
           <h4 className="text-shb-title-10">Belåningsgrad</h4>
           <span className="text-shb-title-5">
-            {numberWithSpaces(act.mortgageDeed)} %
+            {convertToPercent(calculateLoanToValueRatio(act))} %
           </span>
         </li>
         <li className="lg:border-l lg:border-black lg:pl-12">
@@ -164,12 +185,6 @@ function MortgageDeed({ act }: { act: Act }) {
     <div className="p-6 bg-shb-hb2-light rounded-lg">
       <ul className="flex flex-col gap-6 lg:gap-12 lg:flex-row">
         <li className="lg:min-w-40">
-          <h4 className="text-shb-title-10">Befintliga pantbrev</h4>
-          <span className="text-shb-title-5">
-            {numberWithSpaces(act.valuation)} SEK
-          </span>
-        </li>
-        <li className="lg:border-l lg:border-black lg:pl-12">
           <h4 className="text-shb-title-10">Nya pantbrev</h4>
           <span className="text-shb-title-5">
             {numberWithSpaces(act.mortgageDeed)} SEK
@@ -177,9 +192,7 @@ function MortgageDeed({ act }: { act: Act }) {
         </li>
         <li className="lg:border-l lg:border-black lg:pl-12">
           <h4 className="text-shb-title-10">Inskrivningskostnader</h4>
-          <span className="text-shb-title-5">
-            {numberWithSpaces(act.mortgageDeed)} SEK
-          </span>
+          <span className="text-shb-title-5"># SEK</span>
         </li>
       </ul>
     </div>
@@ -205,7 +218,7 @@ function Contract({ act }: { act: Act }) {
 
 function MortgageTable({ act }: { act: Act }) {
   return (
-    <Table cols={5}>
+    <Table>
       <TableHead>
         <TableHeaderCell label="Kostnadstyp" unit="" />
         <TableHeaderCell label="Stämpelskatt" unit="SEK" />
@@ -213,20 +226,20 @@ function MortgageTable({ act }: { act: Act }) {
       </TableHead>
       <TableBody>
         <TableRow first={true}>
-          <TableDataCell first={true}>Pantbrevskostnad</TableDataCell>
-          <TableDataCell>14 000</TableDataCell>
-          <TableDataCell>750</TableDataCell>
+          <TableDataCell>Pantbrevskostnad</TableDataCell>
+          <TableDataCell>#</TableDataCell>
+          <TableDataCell>#</TableDataCell>
         </TableRow>
         <TableRow>
-          <TableDataCell first={true}>Pantbrevskostnad</TableDataCell>
-          <TableDataCell>14 000</TableDataCell>
-          <TableDataCell>750</TableDataCell>
+          <TableDataCell>Pantbrevskostnad</TableDataCell>
+          <TableDataCell>#</TableDataCell>
+          <TableDataCell>#</TableDataCell>
         </TableRow>
       </TableBody>
       <TableFooter>
-        <TableDataCell footer={true} first={true}></TableDataCell>
-        <TableDataCell footer={true}>28 000</TableDataCell>
-        <TableDataCell footer={true}>1 500</TableDataCell>
+        <TableDataCell footer={true}></TableDataCell>
+        <TableDataCell footer={true}>#</TableDataCell>
+        <TableDataCell footer={true}>#</TableDataCell>
       </TableFooter>
     </Table>
   );
@@ -259,7 +272,7 @@ function MortgageTableSmall({ act }: { act: Act }) {
 
 function LoanTable({ act }: { act: Act }) {
   return (
-    <Table cols={6}>
+    <Table>
       <TableHead>
         <TableHeaderCell label="Skuld" unit="SEK" />
         <TableHeaderCell label="Ränta" unit="%" />
@@ -272,9 +285,7 @@ function LoanTable({ act }: { act: Act }) {
         {act.loans.map((loan, index) => {
           return (
             <TableRow key={loan.id} first={index === 0}>
-              <TableDataCell first={true}>
-                {numberWithSpaces(loan.debt)}
-              </TableDataCell>
+              <TableDataCell>{numberWithSpaces(loan.debt)}</TableDataCell>
               <TableDataCell>{convertToPercent(loan.interest)}</TableDataCell>
               <TableDataCell>
                 {numberWithSpaces(sumInterestForLoan(loan))}
@@ -289,17 +300,18 @@ function LoanTable({ act }: { act: Act }) {
         })}
       </TableBody>
       <TableFooter>
-        <TableDataCell span={2} footer={true}>
+        <TableDataCell footer={true}>
           {numberWithSpaces(sumDebtForAct(act))}
         </TableDataCell>
+        <TableDataCell footer={true}></TableDataCell>
         <TableDataCell footer={true}>
           {numberWithSpaces(sumInterestForAct(act))}
         </TableDataCell>
         <TableDataCell footer={true}></TableDataCell>
-        <TableDataCell footer={true}></TableDataCell>
         <TableDataCell footer={true}>
           {numberWithSpaces(sumAmortizationForAct(act))}
         </TableDataCell>
+        <TableDataCell footer={true}></TableDataCell>
       </TableFooter>
     </Table>
   );
@@ -340,5 +352,19 @@ function LoanTableSmall({ act }: { act: Act }) {
         </ListFooterItemValue>
       </ListFooterItem>
     </List>
+  );
+}
+
+export function AmortizationRules({ act }: { act: Act }) {
+  const response = ruleHighAmortization(act);
+
+  if (response.pass) {
+    return null;
+  }
+
+  return (
+    <ActRuleList>
+      <ManualActRule icon="thumbs-down">{response.text}</ManualActRule>
+    </ActRuleList>
   );
 }

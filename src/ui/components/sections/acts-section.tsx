@@ -11,7 +11,10 @@ import {
   sumAmortizationForAct,
 } from "@/utils/amortization";
 import { calculateLoanToValueRatio } from "@/utils/loan";
-import useEconomicPlanState, { Act } from "@/stores/economic-plan-store";
+import useEconomicPlanState, {
+  Act,
+  EconomicPlan,
+} from "@/stores/economic-plan-store";
 import {
   List,
   ListFooterItem,
@@ -26,10 +29,17 @@ import {
   TableHeaderCell,
   TableRow,
 } from "../layout/table";
+import {
+  ruleEnergyClass,
+  ruleHighAmortization,
+  ruleMortgageDeedAvailable,
+} from "@/utils/act";
+import { ActRule, ActRuleList, ManualActRule } from "../molecules/act-rule";
+import Switch from "../atoms/switch";
 
 export default function ActsSection({ ref }: { ref: RefObject<HTMLElement> }) {
   const [economicPlan] = useEconomicPlanState(
-    useShallow((state) => [state.currentPlan])
+    useShallow((state) => [state.currentPlan, state.planUpdated])
   );
 
   return (
@@ -47,6 +57,9 @@ export default function ActsSection({ ref }: { ref: RefObject<HTMLElement> }) {
 }
 
 function ActContainer({ act }: { act: Act }) {
+  const [insertAct] = useEconomicPlanState(
+    useShallow((state) => [state.currentPlan.insertAct])
+  );
   const [display, setDisplay] = useState(false);
 
   return (
@@ -66,6 +79,22 @@ function ActContainer({ act }: { act: Act }) {
           )}
         </button>
       </header>
+      {display && (
+        <div className="p-6 pt-0">
+          <div className="px-6 py-3 border rounded-lg">
+            <Switch
+              justify="start"
+              label="Använd i ekonomiberäkningar"
+              checked={act.usedInCalculations}
+              onCheckedChange={(checked) => {
+                const newAct = { ...act };
+                newAct.usedInCalculations = checked;
+                insertAct(newAct);
+              }}
+            />
+          </div>
+        </div>
+      )}
       {display && <ActContent act={act} />}
     </section>
   );
@@ -75,7 +104,9 @@ function ActContent({ act }: { act: Act }) {
   return (
     <div className="flex flex-col gap-3 p-6 pt-0">
       <Economy act={act} />
+      <EconomyRules act={act} />
       <Contract act={act} />
+      <ContractRules act={act} />
       <Loans act={act} />
     </div>
   );
@@ -135,7 +166,7 @@ function LoanTableSmall({ act }: { act: Act }) {
 
 function LoanTable({ act }: { act: Act }) {
   return (
-    <Table cols={6}>
+    <Table>
       <TableHead>
         <TableHeaderCell label="Skuld" unit="SEK" />
         <TableHeaderCell label="Ränta" unit="%" />
@@ -148,9 +179,7 @@ function LoanTable({ act }: { act: Act }) {
         {act.loans.map((loan, index) => {
           return (
             <TableRow key={loan.id} first={index === 0}>
-              <TableDataCell first={true}>
-                {numberWithSpaces(loan.debt)}
-              </TableDataCell>
+              <TableDataCell>{numberWithSpaces(loan.debt)}</TableDataCell>
               <TableDataCell>{convertToPercent(loan.interest)}</TableDataCell>
               <TableDataCell>
                 {numberWithSpaces(sumInterestForLoan(loan))}
@@ -233,5 +262,50 @@ function Economy({ act }: { act: Act }) {
         </li>
       </ul>
     </div>
+  );
+}
+
+export function EconomyRules({ act }: { act: Act }) {
+  const mortgageResponse = ruleMortgageDeedAvailable(act);
+  const amortizationResponse = ruleHighAmortization(act);
+
+  if (!mortgageResponse.pass && amortizationResponse.pass) {
+    return null;
+  }
+
+  return (
+    <ActRuleList>
+      {mortgageResponse.pass && <ActRule response={mortgageResponse} />}
+      {!amortizationResponse.pass && (
+        <ActRule response={amortizationResponse} />
+      )}
+    </ActRuleList>
+  );
+}
+
+export function ContractRules({ act }: { act: Act }) {
+  const response = ruleEnergyClass(act);
+
+  return (
+    <ActRuleList>
+      {response.pass && (
+        <ManualActRule icon="thumbs-up">
+          {response.text} Läs mer på{" "}
+          <a className="underline text-shb-hb1" href="#">
+            Energikollen
+          </a>
+          .
+        </ManualActRule>
+      )}
+      {!response.pass && (
+        <ManualActRule icon="information">
+          {response.text} Se vad du kan göra för att få gröna avtal på{" "}
+          <a className="underline text-shb-hb1" href="#">
+            Energikollen
+          </a>
+          .
+        </ManualActRule>
+      )}
+    </ActRuleList>
   );
 }

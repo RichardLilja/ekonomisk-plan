@@ -4,13 +4,19 @@ export default function Switch({
   label,
   onCheckedChange,
   checked,
+  justify = "between",
 }: {
   label: string;
   onCheckedChange: (checked: boolean) => void;
   checked: boolean;
+  justify?: "start" | "between";
 }) {
   return (
-    <label className="flex justify-between items-center">
+    <label
+      className={`flex ${
+        justify === "start" ? "justify-start gap-3" : "justify-between"
+      } items-center`}
+    >
       <span className="text-shb-text-2">{label}</span>
       <SwitchPrimitives.Root
         checked={checked}

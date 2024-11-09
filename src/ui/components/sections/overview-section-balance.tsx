@@ -54,7 +54,9 @@ function calculateItems(customers: Array<Customer>, acts: Array<Act>) {
   });
 
   acts.forEach((act) => {
-    items.totalDebt += sumDebtForAct(act);
+    if (act.usedInCalculations) {
+      items.totalDebt += sumDebtForAct(act);
+    }
   });
 
   return items;

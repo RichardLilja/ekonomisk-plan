@@ -3,6 +3,7 @@ import { create } from "zustand";
 export interface EconomicPlanState {
   plans: Array<EconomicPlan>;
   currentPlan: EconomicPlan;
+  planUpdated: boolean;
 }
 
 export interface EconomicPlan {
@@ -48,6 +49,7 @@ export interface Act {
   contractType: string;
   energyClass: string;
   loans: Array<Loan>;
+  usedInCalculations: boolean;
 }
 
 export interface Loan {
@@ -61,6 +63,7 @@ export interface Loan {
 
 const useEconomicPlanState = create<EconomicPlanState>((set) => ({
   plans: [],
+  planUpdated: false,
   currentPlan: {
     customers: [
       {
@@ -86,12 +89,13 @@ const useEconomicPlanState = create<EconomicPlanState>((set) => ({
         const customers = [...state.currentPlan.customers];
         const index = customers.findIndex((c) => c.id === customer.id);
 
-        if (index) {
+        if (index > -1) {
           customers.splice(index, 1);
           customers.push(customer);
         }
 
         return {
+          planUpdated: !state.planUpdated,
           currentPlan: {
             ...state.currentPlan,
             customers,
@@ -106,13 +110,14 @@ const useEconomicPlanState = create<EconomicPlanState>((set) => ({
         belongsToCustomer: ["670329-2133"],
         new: false,
         valuation: 3000000,
-        mortgageDeed: 0,
+        mortgageDeed: 2100000,
         contractType: "Hypotekslån",
-        energyClass: "A",
+        energyClass: "B",
+        usedInCalculations: true,
         loans: [
           {
             id: "15-12345-11111",
-            debt: 2000000,
+            debt: 1000000,
             interest: 0.0375,
             period: "3 mån",
             expireDate: "2024-11-03",
@@ -120,11 +125,11 @@ const useEconomicPlanState = create<EconomicPlanState>((set) => ({
           },
           {
             id: "15-12345-22222",
-            debt: 2000000,
-            interest: 0.0375,
-            period: "3 mån",
-            expireDate: "2024-11-03",
-            amortization: 2000,
+            debt: 800000,
+            interest: 0.0325,
+            period: "2 år",
+            expireDate: "2024-06-12",
+            amortization: 0,
           },
         ],
       },
@@ -134,13 +139,14 @@ const useEconomicPlanState = create<EconomicPlanState>((set) => ({
         belongsToCustomer: ["670329-2133"],
         new: true,
         valuation: 4500000,
-        mortgageDeed: 0,
+        mortgageDeed: 3000000,
         contractType: "Hypotekslån",
         energyClass: "A",
+        usedInCalculations: true,
         loans: [
           {
             id: "nytt-15-12345-11111",
-            debt: 2000000,
+            debt: 4000000,
             interest: 0.0375,
             period: "3 mån",
             expireDate: "2024-11-03",
@@ -155,16 +161,17 @@ const useEconomicPlanState = create<EconomicPlanState>((set) => ({
         const acts = [...state.currentPlan.acts];
         const index = acts.findIndex((a) => a.id === act.id);
 
-        if (index) {
+        if (index > -1) {
           acts.splice(index, 1);
           acts.push(act);
         }
 
         return {
+          planUpdated: !state.planUpdated,
           currentPlan: {
             ...state.currentPlan,
             acts,
-            customersUpdated: !state.currentPlan.customersUpdated,
+            customersUpdated: !state.currentPlan.actsUpdated,
           },
         };
       }),

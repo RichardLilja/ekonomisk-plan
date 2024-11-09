@@ -25,8 +25,10 @@ export function expensesGraphItems(
   });
 
   acts.forEach((act) => {
-    items.totalAmortization += sumAmortizationForAct(act);
-    items.totalInterest += sumInterestForAct(act);
+    if (act.usedInCalculations) {
+      items.totalAmortization += sumAmortizationForAct(act);
+      items.totalInterest += sumInterestForAct(act);
+    }
   });
 
   items.savingSpace =

@@ -1,48 +1,19 @@
-const gridCols = [
-  "grid-cols-1",
-  "grid-cols-2",
-  "grid-cols-3",
-  "grid-cols-4",
-  "grid-cols-5",
-  "grid-cols-6",
-  "grid-cols-7",
-  "grid-cols-8",
-  "grid-cols-9",
-  "grid-cols-10",
-  "grid-cols-11",
-  "grid-cols-12",
-];
+import { HTMLProps } from "react";
 
-const colSpan = [
-  "col-span-1",
-  "col-span-2",
-  "col-span-3",
-  "col-span-4",
-  "col-span-5",
-  "col-span-6",
-  "col-span-7",
-  "col-span-8",
-  "col-span-9",
-  "col-span-10",
-  "col-span-11",
-  "col-span-12",
-];
-
-export function Table({
-  children,
-  cols,
-}: {
-  children: React.ReactNode;
-  cols: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
-}) {
-  return <table className={`grid ${gridCols[cols - 1]}`}>{children}</table>;
+export function Table({ children }: { children: React.ReactNode }) {
+  return (
+    <table className="table-fixed rounded-lg overflow-hidden border-collapse">
+      {children}
+    </table>
+  );
 }
 
 export function TableHead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="grid grid-cols-subgrid col-[1/-1] px-6 py-3 pt-4 rounded-t-lg bg-shb-hb2-light">
-      <tr className="grid grid-cols-subgrid col-[1/-1] text-left">
+    <thead className="w-full">
+      <tr className="w-full">
         {children}
+        <th className="w-full bg-shb-hb2-light" aria-hidden={true}></th>
       </tr>
     </thead>
   );
@@ -51,24 +22,24 @@ export function TableHead({ children }: { children: React.ReactNode }) {
 export function TableHeaderCell({
   label,
   unit,
-  span = 1,
+  width = "min-w-0",
 }: {
   label: string;
   unit: string;
-  span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+  width?: string;
 }) {
   return (
-    <th className={`flex flex-col ${colSpan[span - 1]}`}>
-      <span className="text-shb-title-10 font-bold">{label}</span>
-      <span className="text-shb-text-3">{unit}</span>
+    <th className={`${width} px-6 py-3 pt-4 bg-shb-hb2-light`}>
+      <div className="flex flex-col items-start">
+        <span className="text-shb-title-10 font-bold">{label}</span>
+        <span className="text-shb-text-3">{unit}</span>
+      </div>
     </th>
   );
 }
 
 export function TableBody({ children }: { children: React.ReactNode }) {
-  return (
-    <tbody className="grid grid-cols-subgrid col-[1/-1]">{children}</tbody>
-  );
+  return <tbody>{children}</tbody>;
 }
 
 export function TableRow({
@@ -79,45 +50,41 @@ export function TableRow({
   first?: boolean;
 }) {
   return (
-    <tr
-      className={`grid grid-cols-subgrid col-[1/-1] py-3 ${
-        !first && "border-t border-shb-gray-10"
-      }`}
-    >
+    <tr className={`${!first && "border-t border-shb-gray-10"}`}>
       {children}
+      <td className="w-full bg-background" aria-hidden={true}></td>
     </tr>
   );
 }
 
 export function TableDataCell({
   footer = false,
-  first = false,
-  span = 1,
   children,
 }: {
   footer?: boolean;
-  first?: boolean;
-  span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   children?: React.ReactNode;
 }) {
   if (footer) {
     return (
-      <td className={`text-shb-title-10 font-bold ${colSpan[span - 1]}`}>
-        {children}
+      <td className="text-shb-title-10 font-bold bg-shb-gray-5 whitespace-nowrap">
+        <div className="px-6 py-3">{children}</div>
       </td>
     );
   }
   return (
-    <td className={`${colSpan[span - 1]} ${first && "pl-6"}`}>
-      <span className="hover:font-bold cursor-pointer">{children}</span>
+    <td className="px-6 py-3 text-shb-text-1 bg-background whitespace-nowrap hover:font-bold">
+      <span>{children}</span>
     </td>
   );
 }
 
 export function TableFooter({ children }: { children: React.ReactNode }) {
   return (
-    <tfoot className="bg-shb-gray-5 grid grid-cols-subgrid col-[1/-1] px-6 py-3 rounded-b-lg">
-      <tr className="grid grid-cols-subgrid col-[1/-1]">{children}</tr>
+    <tfoot>
+      <tr className="border-t border-shb-gray-10">
+        {children}
+        <td className="w-full bg-shb-gray-5" aria-hidden={true}></td>
+      </tr>
     </tfoot>
   );
 }
