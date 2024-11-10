@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useState } from "react";
 import Section, { SectionHeader, SubSection } from "../layout/section";
 import { useShallow } from "zustand/shallow";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -10,11 +10,8 @@ import {
   calculateMinAmortizationSum,
   sumAmortizationForAct,
 } from "@/utils/amortization";
-import { calculateLoanToValueRatio } from "@/utils/loan";
-import useEconomicPlanState, {
-  Act,
-  EconomicPlan,
-} from "@/stores/economic-plan-store";
+import { calculateLoanToValueRatio, fetchPeriodLabel } from "@/utils/loan";
+import useEconomicPlanState, { Act } from "@/stores/economic-plan-store";
 import {
   List,
   ListFooterItem,
@@ -136,12 +133,14 @@ function LoanTableSmall({ act }: { act: Act }) {
               {numberWithSpaces(loan.debt)} SEK
             </ListItemValue>
             <ListItemValue label="Ränta">
-              {convertToPercent(loan.interest)} %
+              {act.interestRates[loan.periodIndex]} %
             </ListItemValue>
             <ListItemValue label="Räntekostnad">
-              {numberWithSpaces(sumInterestForLoan(loan))} SEK / mån
+              {numberWithSpaces(sumInterestForLoan(act, loan))} SEK / mån
             </ListItemValue>
-            <ListItemValue label="Löptid">{loan.period}</ListItemValue>
+            <ListItemValue label="Löptid">
+              {fetchPeriodLabel(loan.periodIndex)}
+            </ListItemValue>
             <ListItemValue label="Utgångsdag">{loan.expireDate}</ListItemValue>
             <ListItemValue label="Amortering">
               {numberWithSpaces(loan.amortization)} SEK / mån
@@ -180,11 +179,15 @@ function LoanTable({ act }: { act: Act }) {
           return (
             <TableRow key={loan.id} first={index === 0}>
               <TableDataCell>{numberWithSpaces(loan.debt)}</TableDataCell>
-              <TableDataCell>{convertToPercent(loan.interest)}</TableDataCell>
               <TableDataCell>
-                {numberWithSpaces(sumInterestForLoan(loan))}
+                {act.interestRates[loan.periodIndex]}
               </TableDataCell>
-              <TableDataCell>{loan.period}</TableDataCell>
+              <TableDataCell>
+                {numberWithSpaces(sumInterestForLoan(act, loan))}
+              </TableDataCell>
+              <TableDataCell>
+                {fetchPeriodLabel(loan.periodIndex)}
+              </TableDataCell>
               <TableDataCell>{loan.expireDate}</TableDataCell>
               <TableDataCell>
                 {numberWithSpaces(loan.amortization)}

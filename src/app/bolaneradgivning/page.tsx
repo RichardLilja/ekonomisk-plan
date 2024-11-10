@@ -16,6 +16,8 @@ import NewLoanSection from "@/ui/components/sections/new-loan-section";
 import OverviewSection from "@/ui/components/sections/overview-section";
 import PageHeader from "@/ui/components/sections/page/page-header";
 import PageSectionSeparator from "@/ui/components/sections/page/page-section-separator";
+import CounsellingSidebarSection from "@/ui/components/sections/sidebar/sidebar-counselling";
+import InterestRatesSidebarSection from "@/ui/components/sections/sidebar/sidebar-interest-rates";
 import UserInterfaceSidebarSection from "@/ui/components/sections/sidebar/sidebar-user-interface";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
@@ -55,6 +57,8 @@ export default function Page() {
             <SidebarHeader title="Inställningar" />
             <SidebarScrollContainer>
               <UserInterfaceSidebarSection />
+              <InterestRatesSidebarSection />
+              <CounsellingSidebarSection />
             </SidebarScrollContainer>
           </Sidebar>
           <Overlay />

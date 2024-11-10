@@ -13,8 +13,8 @@ export default function Switch({
 }) {
   return (
     <label
-      className={`flex ${
-        justify === "start" ? "justify-start gap-3" : "justify-between"
+      className={`flex justify-between ${
+        justify === "start" ? "md:justify-start md:gap-3" : null
       } items-center`}
     >
       <span className="text-shb-text-2">{label}</span>

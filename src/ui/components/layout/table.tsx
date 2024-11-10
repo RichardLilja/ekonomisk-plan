@@ -1,5 +1,3 @@
-import { HTMLProps } from "react";
-
 export function Table({ children }: { children: React.ReactNode }) {
   return (
     <table className="table-fixed rounded-lg overflow-hidden border-collapse">
@@ -8,12 +6,20 @@ export function Table({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function TableHead({ children }: { children: React.ReactNode }) {
+export function TableHead({
+  children,
+  hasController = false,
+}: {
+  children: React.ReactNode;
+  hasController?: boolean;
+}) {
   return (
     <thead className="w-full">
       <tr className="w-full">
         {children}
-        <th className="w-full bg-shb-hb2-light" aria-hidden={true}></th>
+        {!hasController && (
+          <th className="w-full bg-shb-hb2-light" aria-hidden={true}></th>
+        )}
       </tr>
     </thead>
   );
@@ -30,12 +36,20 @@ export function TableHeaderCell({
 }) {
   return (
     <th className={`${width} px-6 py-3 pt-4 bg-shb-hb2-light`}>
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col items-start h-12">
         <span className="text-shb-title-10 font-bold">{label}</span>
         <span className="text-shb-text-3">{unit}</span>
       </div>
     </th>
   );
+}
+
+export function TableHeaderControllerCell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <th className="w-full bg-shb-hb2-light">{children}</th>;
 }
 
 export function TableBody({ children }: { children: React.ReactNode }) {
@@ -45,14 +59,18 @@ export function TableBody({ children }: { children: React.ReactNode }) {
 export function TableRow({
   children,
   first = false,
+  hasController = false,
 }: {
   children: React.ReactNode;
   first?: boolean;
+  hasController?: boolean;
 }) {
   return (
     <tr className={`${!first && "border-t border-shb-gray-10"}`}>
       {children}
-      <td className="w-full bg-background" aria-hidden={true}></td>
+      {!hasController && (
+        <td className="w-full bg-background" aria-hidden={true}></td>
+      )}
     </tr>
   );
 }
@@ -73,7 +91,7 @@ export function TableDataCell({
   }
   return (
     <td className="px-6 py-3 text-shb-text-1 bg-background whitespace-nowrap hover:font-bold">
-      <span>{children}</span>
+      {children}
     </td>
   );
 }

@@ -15,6 +15,9 @@ export interface UserInterfaceState {
 
   bottomPanelSmallWidgets: boolean;
   setBottomPanelSmallWidgets: (bottomPanelSmallWidgets: boolean) => void;
+
+  counselling: boolean;
+  setCounselling: (couselling: boolean) => void;
 }
 
 const useUserInterfaceState = create<UserInterfaceState>((set) => ({
@@ -33,6 +36,9 @@ const useUserInterfaceState = create<UserInterfaceState>((set) => ({
   bottomPanelSmallWidgets: true,
   setBottomPanelSmallWidgets: (bottomPanelSmallWidgets) =>
     set({ bottomPanelSmallWidgets }),
+
+  counselling: true,
+  setCounselling: (counselling) => set({ counselling }),
 }));
 
 export default useUserInterfaceState;

@@ -69,7 +69,7 @@ export function SidebarSection({
     <section className="p-6 border-b">
       {title ? (
         <header>
-          <h3 className="font-header-slab text-shb-title-6">{title}</h3>
+          <h3 className="font-header-slab text-shb-title-7">{title}</h3>
         </header>
       ) : null}
       <div className="flex flex-col gap-1.5 pt-3">{children}</div>

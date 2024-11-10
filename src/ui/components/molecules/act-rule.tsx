@@ -1,5 +1,5 @@
 import { ActRuleResponseObject } from "@/utils/act";
-import { CircleAlert, ThumbsDown, ThumbsUp } from "lucide-react";
+import { CircleAlert, ThumbsUp, TriangleAlert } from "lucide-react";
 
 export function ActRuleList({ children }: { children: React.ReactNode }) {
   return <ul className={"flex flex-col gap-0.5 px-5 pb-4"}>{children}</ul>;
@@ -17,8 +17,8 @@ export function ActRule({ response }: { response: ActRuleResponseObject }) {
         </span>
       )}
       {!response.pass && (
-        <span className="shrink-0 pt-[6px]">
-          <ThumbsDown height={20} className="text-danger shrink-0" />
+        <span className="shrink-0 pt-[3.5px]">
+          <TriangleAlert height={20} className="text-danger shrink-0" />
         </span>
       )}
       <span className="text-shb-text-1 text-shb-gray-70">{response.text}</span>
@@ -41,8 +41,8 @@ export function ManualActRule({
         </span>
       )}
       {icon === "thumbs-down" && (
-        <span className="shrink-0 pt-[6px]">
-          <ThumbsDown height={20} className="text-danger shrink-0" />
+        <span className="shrink-0 pt-[3.5px]">
+          <TriangleAlert height={20} className="text-danger shrink-0" />
         </span>
       )}
       {icon === "information" && (

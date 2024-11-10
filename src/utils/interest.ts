@@ -1,19 +1,24 @@
 import { Act, Loan } from "@/stores/economic-plan-store";
 
-export function sumInterestForLoan(loan: Loan, rounded: boolean = true) {
-  const interest = (loan.debt * loan.interest) / 12;
+export function sumInterestForLoan(
+  act: Act,
+  loan: Loan,
+  rounded: boolean = true
+) {
+  const interest = act.interestRates[loan.periodIndex] / 100;
+  const sumInterest = (loan.debt * interest) / 12;
 
   if (rounded) {
-    return Math.ceil(interest);
+    return Math.ceil(sumInterest);
   }
-  return interest;
+  return sumInterest;
 }
 
 export function sumInterestForAct(act: Act, rounded: boolean = true) {
   let totalInterest = 0;
 
   act.loans.forEach((loan) => {
-    totalInterest += sumInterestForLoan(loan);
+    totalInterest += sumInterestForLoan(act, loan);
   });
 
   if (rounded) {
