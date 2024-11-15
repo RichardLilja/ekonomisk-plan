@@ -1,3 +1,5 @@
+"use client";
+
 import { RefObject, useState } from "react";
 import Section, { SectionHeader, SubSection } from "../layout/section";
 import { useShallow } from "zustand/shallow";
@@ -10,7 +12,11 @@ import {
   calculateMinAmortizationSum,
   sumAmortizationForAct,
 } from "@/utils/amortization";
-import { calculateLoanToValueRatio, fetchPeriodLabel } from "@/utils/loan";
+import {
+  calculateEndDate,
+  calculateLoanToValueRatio,
+  fetchPeriodLabel,
+} from "@/utils/loan";
 import useEconomicPlanState, { Act } from "@/stores/economic-plan-store";
 import {
   List,
@@ -141,7 +147,9 @@ function LoanTableSmall({ act }: { act: Act }) {
             <ListItemValue label="Löptid">
               {fetchPeriodLabel(loan.periodIndex)}
             </ListItemValue>
-            <ListItemValue label="Utgångsdag">{loan.expireDate}</ListItemValue>
+            <ListItemValue label="Utgångsdag">
+              {calculateEndDate(loan.startDate, loan.periodIndex)}
+            </ListItemValue>
             <ListItemValue label="Amortering">
               {numberWithSpaces(loan.amortization)} SEK / mån
             </ListItemValue>
@@ -188,7 +196,9 @@ function LoanTable({ act }: { act: Act }) {
               <TableDataCell>
                 {fetchPeriodLabel(loan.periodIndex)}
               </TableDataCell>
-              <TableDataCell>{loan.expireDate}</TableDataCell>
+              <TableDataCell>
+                {calculateEndDate(loan.startDate, loan.periodIndex)}
+              </TableDataCell>
               <TableDataCell>
                 {numberWithSpaces(loan.amortization)}
               </TableDataCell>

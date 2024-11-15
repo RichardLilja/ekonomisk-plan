@@ -14,7 +14,7 @@ export function TableSelect({
 }) {
   return (
     <select
-      className="-translate-x-1 bg-transparent hover:bg-shb-hb5-light text-interactive text-shb-text-1"
+      className="-translate-x-1 bg-transparent hover:bg-shb-hb5-light text-interactive text-shb-text-1 cursor-pointer"
       value={value}
       onChange={onChangeHandler}
     >

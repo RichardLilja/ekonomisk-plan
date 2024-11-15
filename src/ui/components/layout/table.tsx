@@ -84,7 +84,7 @@ export function TableDataCell({
 }) {
   if (footer) {
     return (
-      <td className="text-shb-title-10 font-bold bg-shb-gray-5 whitespace-nowrap">
+      <td className="text-shb-title-10 font-bold bg-shb-hb9 whitespace-nowrap">
         <div className="px-6 py-3">{children}</div>
       </td>
     );
@@ -101,7 +101,7 @@ export function TableFooter({ children }: { children: React.ReactNode }) {
     <tfoot>
       <tr className="border-t border-shb-gray-10">
         {children}
-        <td className="w-full bg-shb-gray-5" aria-hidden={true}></td>
+        <td className="w-full bg-shb-hb9" aria-hidden={true}></td>
       </tr>
     </tfoot>
   );
@@ -136,7 +136,7 @@ export function ListItemValue({
 
 export function ListFooterItem({ children }: { children: React.ReactNode }) {
   return (
-    <li className="rounded-lg p-3 bg-shb-gray-5">
+    <li className="rounded-lg p-3 bg-shb-hb9">
       <dl>{children}</dl>
     </li>
   );

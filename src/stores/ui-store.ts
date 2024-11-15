@@ -18,6 +18,9 @@ export interface UserInterfaceState {
 
   counselling: boolean;
   setCounselling: (couselling: boolean) => void;
+
+  loanGranted: boolean;
+  setLoanGranted: (loanGranted: boolean) => void;
 }
 
 const useUserInterfaceState = create<UserInterfaceState>((set) => ({
@@ -37,8 +40,11 @@ const useUserInterfaceState = create<UserInterfaceState>((set) => ({
   setBottomPanelSmallWidgets: (bottomPanelSmallWidgets) =>
     set({ bottomPanelSmallWidgets }),
 
-  counselling: true,
+  counselling: false,
   setCounselling: (counselling) => set({ counselling }),
+
+  loanGranted: false,
+  setLoanGranted: (loanGranted) => set({ loanGranted }),
 }));
 
 export default useUserInterfaceState;

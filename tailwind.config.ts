@@ -25,6 +25,7 @@ const config: Config = {
         "shb-hb6": "hsl(var(--hsl-shb-hb6))",
         "shb-hb7-contrast": "hsl(var(--hsl-shb-hb7-contrast))",
         "shb-hb8": "hsl(var(--hsl-shb-hb8))",
+        "shb-hb9": "hsl(var(--hsl-shb-hb9))",
         "shb-gray-5": "hsl(var(--hsl-shb-gray-5))",
         "shb-gray-10": "hsl(var(--hsl-shb-gray-10))",
         "shb-gray-15": "hsl(var(--hsl-shb-gray-15))",

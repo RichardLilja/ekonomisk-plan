@@ -12,7 +12,7 @@ export default function BottomPanel({
 
   return (
     <div
-      className={`flex justify-center fixed bottom-0 left-0 right-0 z-20 bg-shb-hb6 text-shb-white transition transform duration-300 ${
+      className={`flex justify-center fixed bottom-0 left-0 right-0 z-20 bg-shb-hb9 text-foreground shadow-[rgba(0,0,0,0.32)_0px_0px_8px_0px] transition transform duration-300 ${
         bottomPanel ? "translate-y-0" : "translate-y-full"
       }`}
     >

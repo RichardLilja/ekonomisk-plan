@@ -36,6 +36,11 @@ export default function CustomerEconomyBottomPanelSection() {
     setSavingSpace(i.savingSpace.toString());
   }, []);
 
+  useEffect(() => {
+    const i = expensesGraphItems(economicPlan.customers, economicPlan.acts);
+    setSavingSpace(i.savingSpace.toString());
+  }, [economicPlan]);
+
   return (
     <BottomPanelSection>
       <BottomPanelSubSection>
@@ -91,7 +96,7 @@ function ExpenseChart({
   }
 
   if (series[0]?.type === "pie") {
-    series[0].borderColor = "#032C4A";
+    series[0].borderColor = "#ECEAE6";
     series[0].innerSize = "50%";
   }
 

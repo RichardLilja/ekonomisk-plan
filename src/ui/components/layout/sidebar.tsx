@@ -11,7 +11,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <section
-      className={`h-dvh max-h-dvh flex flex-col w-full md:max-w-80 fixed top-0 right-0 z-50 transition transform duration-300 bg-shb-white ${
+      className={`h-dvh max-h-dvh flex flex-col w-full md:max-w-80 fixed top-0 right-0 z-50 transition transform duration-300 bg-shb-white shadow-[rgba(0,0,0,0.32)_0px_0px_8px_0px] ${
         sidebar ? "translate-x-0" : "translate-x-full"
       }`}
     >

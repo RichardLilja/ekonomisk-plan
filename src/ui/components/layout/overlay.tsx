@@ -24,7 +24,7 @@ export default function Overlay() {
     <div
       className={`fixed inset-0 z-30 bg-black transition opacity duration-300 ${
         overlay
-          ? "opacity-50 pointer-events-auto"
+          ? "opacity-20 pointer-events-auto"
           : "opacity-0 pointer-events-none"
       }`}
     />

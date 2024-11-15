@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ChangeEvent,
   Dispatch,
@@ -33,6 +35,7 @@ import {
 import { sumInterestForAct, sumInterestForLoan } from "@/utils/interest";
 import { sumDebtForAct } from "@/utils/debt";
 import {
+  calculateEndDate,
   calculateLegalCost,
   calculateLoanToValueRatio,
   fetchPeriodLabel,
@@ -41,6 +44,7 @@ import {
   calculateCashDeposit,
   ruleEnoughAmortization,
   ruleHighAmortization,
+  valueEditable,
 } from "@/utils/act";
 import { ActRuleList, ManualActRule } from "../molecules/act-rule";
 import { ContractRules } from "./acts-section";
@@ -55,15 +59,9 @@ import { TableSelect } from "../atoms/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/ui/components/atoms/dropdown";
 import { EllipsisVerticalIcon, Trash2Icon } from "lucide-react";
@@ -176,8 +174,8 @@ function Economy({ act }: { act: Act }) {
   const [insertAct] = useEconomicPlanState(
     useShallow((state) => [state.currentPlan.insertAct])
   );
-  const [counselling] = useUserInterfaceState(
-    useShallow((state) => [state.counselling])
+  const [counselling, loanGranted] = useUserInterfaceState(
+    useShallow((state) => [state.counselling, state.loanGranted])
   );
   const valElement = useRef<HTMLElement | null>(null);
 
@@ -199,7 +197,7 @@ function Economy({ act }: { act: Act }) {
       <ul className="flex flex-col gap-6 lg:gap-12 lg:flex-row">
         <li className="lg:min-w-40">
           <h4 className="text-shb-title-10">Värdering</h4>
-          {counselling ? (
+          {valueEditable(counselling, loanGranted) ? (
             <>
               <span
                 ref={valElement}
@@ -382,8 +380,8 @@ function LoanTable({ act }: { act: Act }) {
   const [insertAct] = useEconomicPlanState(
     useShallow((state) => [state.currentPlan.insertAct])
   );
-  const [counselling] = useUserInterfaceState(
-    useShallow((state) => [state.counselling])
+  const [counselling, loanGranted] = useUserInterfaceState(
+    useShallow((state) => [state.counselling, state.loanGranted])
   );
   const [deleteMode, setDeleteMode] = useState(false);
 
@@ -444,7 +442,7 @@ function LoanTable({ act }: { act: Act }) {
         <TableHeaderCell label="Utgångsdag" unit="Datum" />
         <TableHeaderCell label="Amortering" unit="SEK / månad" />
         <TableHeaderControllerCell>
-          {counselling && (
+          {valueEditable(counselling, loanGranted) && (
             <div className="flex justify-end pr-6">
               <TableHeaderDropdownMenu
                 act={act}
@@ -464,7 +462,7 @@ function LoanTable({ act }: { act: Act }) {
               hasController={deleteMode}
             >
               <TableDataCell>
-                {counselling ? (
+                {valueEditable(counselling, loanGranted) ? (
                   <TableInput
                     defaultValue={numberWithSpaces(loan.debt)}
                     onBlurHandler={(event) => {
@@ -482,7 +480,7 @@ function LoanTable({ act }: { act: Act }) {
                 {numberWithSpaces(sumInterestForLoan(act, loan))}
               </TableDataCell>
               <TableDataCell>
-                {counselling ? (
+                {valueEditable(counselling, loanGranted) ? (
                   <TableSelect
                     value={loan.periodIndex}
                     options={loanPeriodOptions}
@@ -494,9 +492,11 @@ function LoanTable({ act }: { act: Act }) {
                   fetchPeriodLabel(loan.periodIndex)
                 )}
               </TableDataCell>
-              <TableDataCell>{loan.expireDate}</TableDataCell>
               <TableDataCell>
-                {counselling ? (
+                {calculateEndDate(loan.startDate, loan.periodIndex)}
+              </TableDataCell>
+              <TableDataCell>
+                {valueEditable(counselling, loanGranted) ? (
                   <TableInput
                     defaultValue={numberWithSpaces(loan.amortization)}
                     onBlurHandler={(event) => {
@@ -507,7 +507,7 @@ function LoanTable({ act }: { act: Act }) {
                   numberWithSpaces(loan.amortization)
                 )}
               </TableDataCell>
-              {deleteMode && (
+              {valueEditable(counselling, loanGranted) && deleteMode && (
                 <td className="w-full bg-background">
                   <div className="flex justify-end pr-6">
                     <Button
@@ -566,7 +566,9 @@ function LoanTableSmall({ act }: { act: Act }) {
             <ListItemValue label="Löptid">
               {fetchPeriodLabel(loan.periodIndex)}
             </ListItemValue>
-            <ListItemValue label="Utgångsdag">{loan.expireDate}</ListItemValue>
+            <ListItemValue label="Utgångsdag">
+              {calculateEndDate(loan.startDate, loan.periodIndex)}
+            </ListItemValue>
             <ListItemValue label="Amortering">
               {numberWithSpaces(loan.amortization)} SEK / mån
             </ListItemValue>
@@ -633,7 +635,7 @@ function TableHeaderDropdownMenu({
     id: "",
     debt: 0,
     periodIndex: 0,
-    expireDate: "",
+    startDate: undefined,
     amortization: 0,
   };
 
@@ -654,32 +656,19 @@ function TableHeaderDropdownMenu({
           <EllipsisVerticalIcon />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-shb-white shadow-none border-shb-gray-15">
+      <DropdownMenuContent>
         <DropdownMenuLabel>Lån</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={addLoan}
-          className="text-interactive hover:bg-shb-hb2-light"
-        >
-          Lägg till lån
-        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={addLoan}>Lägg till lån</DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => {
             setDeleteMode(!deleteMode);
           }}
-          className="text-interactive hover:bg-shb-hb2-light"
         >
-          Ta bort{" : "}
-          {deleteMode ? (
-            <span className="font-bold">PÅ</span>
-          ) : (
-            <span className="font-bold">AV</span>
-          )}
+          {deleteMode ? <span>Dölj ta bort</span> : <span>Visa ta bort</span>}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-interactive hover:bg-shb-hb2-light">
-          Lägg till säkerhet
-        </DropdownMenuItem>
+        <DropdownMenuLabel>Säkerheter</DropdownMenuLabel>
+        <DropdownMenuItem>Lägg till säkerhet</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

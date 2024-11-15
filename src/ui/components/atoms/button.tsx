@@ -6,7 +6,7 @@ const buttonStyle = {
     secondary:
       "bg-white text-shb-hb1 border border-shb-hb1 hover:bg-shb-gray-10 hover:text-shb-hb6 hover:border-shb-hb6",
     ghost: "text-shb-hb1 hover:bg-shb-gray-10 hover:text-shb-hb6",
-    danger: "bg-white text-danger border border-danger hover:bg-shb-gray-10",
+    danger: "text-danger border border-danger hover:bg-shb-gray-10",
   },
   sizes: {
     small: "h-7 px-6 text-shb-text-3 leading-none",

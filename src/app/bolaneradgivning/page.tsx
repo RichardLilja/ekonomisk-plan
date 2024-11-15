@@ -10,12 +10,12 @@ import Sidebar, {
 } from "@/ui/components/layout/sidebar";
 import ActsSection from "@/ui/components/sections/acts-section";
 import CustomerEconomyBottomPanelSection from "@/ui/components/sections/bottom-panel/bottom-panel-customer-economy";
-import BufferSection from "@/ui/components/sections/buffer-section";
-import FamilyLawSection from "@/ui/components/sections/family-law-section";
+import DisclaimerSection from "@/ui/components/sections/disclaimer-section";
 import NewLoanSection from "@/ui/components/sections/new-loan-section";
 import OverviewSection from "@/ui/components/sections/overview-section";
 import PageHeader from "@/ui/components/sections/page/page-header";
 import PageSectionSeparator from "@/ui/components/sections/page/page-section-separator";
+import CaseManagerSidebarSection from "@/ui/components/sections/sidebar/sidebar-case-manager";
 import CounsellingSidebarSection from "@/ui/components/sections/sidebar/sidebar-counselling";
 import InterestRatesSidebarSection from "@/ui/components/sections/sidebar/sidebar-interest-rates";
 import UserInterfaceSidebarSection from "@/ui/components/sections/sidebar/sidebar-user-interface";
@@ -28,7 +28,6 @@ export default function Page() {
   );
 
   const slides = [
-    useRef<HTMLElement | null>(null),
     useRef<HTMLElement | null>(null),
     useRef<HTMLElement | null>(null),
     useRef<HTMLElement | null>(null),
@@ -49,8 +48,7 @@ export default function Page() {
           <ActsSection ref={slides[2]} />
           <PageSectionSeparator />
           <NewLoanSection ref={slides[3]} />
-          <FamilyLawSection ref={slides[4]} />
-          <BufferSection ref={slides[5]} />
+          <DisclaimerSection ref={slides[4]} />
         </article>
         <div inert={overlay ? false : true}>
           <Sidebar>
@@ -59,6 +57,7 @@ export default function Page() {
               <UserInterfaceSidebarSection />
               <InterestRatesSidebarSection />
               <CounsellingSidebarSection />
+              <CaseManagerSidebarSection />
             </SidebarScrollContainer>
           </Sidebar>
           <Overlay />

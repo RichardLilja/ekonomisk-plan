@@ -95,3 +95,10 @@ export function calculateCashDeposit(act: Act, rounded: boolean = true) {
   }
   return cashDeposit;
 }
+
+export function valueEditable(counselling: boolean, loanGranted: boolean) {
+  if (counselling && !loanGranted) {
+    return true;
+  }
+  return false;
+}

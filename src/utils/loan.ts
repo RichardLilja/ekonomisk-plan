@@ -40,3 +40,23 @@ export function fetchPeriodLabel(periodIndex: number) {
   }
   return LABELS[periodIndex];
 }
+
+export function calculateEndDate(
+  startDate: Date | undefined,
+  periodIndex: number
+) {
+  if (startDate === undefined) {
+    startDate = new Date(new Date().toISOString().split(/[T ]/i, 1)[0]);
+  }
+
+  const ADD = [3, 12, 24, 36, 60, 96, 120];
+
+  let newMonth = startDate.getMonth();
+  if (ADD[periodIndex]) {
+    newMonth += ADD[periodIndex];
+  }
+
+  return new Date(new Date(startDate).setMonth(newMonth))
+    .toISOString()
+    .split(/[T ]/i, 1)[0];
+}

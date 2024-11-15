@@ -58,7 +58,7 @@ export interface Loan {
   id: string;
   debt: number;
   periodIndex: number;
-  expireDate: string;
+  startDate: Date | undefined;
   amortization: number;
 }
 
@@ -95,14 +95,14 @@ const oldAct = {
       id: "15-12345-11111",
       debt: 1000000,
       periodIndex: 0,
-      expireDate: "2024-11-03",
+      startDate: new Date("2024-11-03"),
       amortization: 2000,
     },
     {
       id: "15-12345-22222",
       debt: 800000,
       periodIndex: 2,
-      expireDate: "2024-06-12",
+      startDate: new Date("2024-06-12"),
       amortization: 0,
     },
   ],
@@ -124,7 +124,7 @@ const newAct: Act = {
       id: "nytt-15-12345-11111",
       debt: 4000000,
       periodIndex: 0,
-      expireDate: "2024-11-03",
+      startDate: undefined,
       amortization: 2000,
     },
   ],
