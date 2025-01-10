@@ -23,7 +23,10 @@ export default function Checkbox({
           <Check className="h-3 text-shb-white" />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
-      <span className="text-shb-text-2">{label}</span>
+      <span
+        dangerouslySetInnerHTML={{ __html: label }}
+        className="text-shb-text-2"
+      ></span>
     </label>
   );
 }

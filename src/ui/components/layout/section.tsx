@@ -5,13 +5,14 @@ import Image from "next/image";
 import { RefObject } from "react";
 import { useShallow } from "zustand/shallow";
 
-type SectionColorScheme = "default" | "hb5-light";
+type SectionColorScheme = "default" | "hb5-light" | "hb6";
 type SectionWidth = "full" | "half";
 type SectionImagePosition = "left" | "right";
 
 const colorSchemes = {
   default: "bg-background text-foreground",
   "hb5-light": "bg-shb-hb5-light text-foreground",
+  hb6: "bg-shb-hb6 text-shb-white",
 };
 
 export default function Section({

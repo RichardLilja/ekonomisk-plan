@@ -1,4 +1,4 @@
-import { Act } from "@/stores/economic-plan-store";
+import { Act, EconomicPlan } from "@/stores/economic-plan-store";
 import { sumDebtForAct } from "./debt";
 import { numberWithSpaces } from "./formatting";
 import { calculateLoanToValueRatio } from "./loan";
@@ -101,4 +101,21 @@ export function valueEditable(counselling: boolean, loanGranted: boolean) {
     return true;
   }
   return false;
+}
+
+export function diffDebt(plan: EconomicPlan, act: Act) {
+  const snapShot = plan.snapshots.find((p) => p.id === act.id);
+
+  if (!snapShot) {
+    return false;
+  }
+
+  const snapShotSumDebt = sumDebtForAct(snapShot);
+  const sumDebt = sumDebtForAct(act);
+
+  if (snapShotSumDebt === sumDebt) {
+    return false;
+  }
+
+  return true;
 }

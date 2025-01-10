@@ -480,17 +480,13 @@ function LoanTable({ act }: { act: Act }) {
                 {numberWithSpaces(sumInterestForLoan(act, loan))}
               </TableDataCell>
               <TableDataCell>
-                {valueEditable(counselling, loanGranted) ? (
-                  <TableSelect
-                    value={loan.periodIndex}
-                    options={loanPeriodOptions}
-                    onChangeHandler={(event) => {
-                      handleBlur(event, loan, "periodIndex");
-                    }}
-                  />
-                ) : (
-                  fetchPeriodLabel(loan.periodIndex)
-                )}
+                <TableSelect
+                  value={loan.periodIndex}
+                  options={loanPeriodOptions}
+                  onChangeHandler={(event) => {
+                    handleBlur(event, loan, "periodIndex");
+                  }}
+                />
               </TableDataCell>
               <TableDataCell>
                 {calculateEndDate(loan.startDate, loan.periodIndex)}

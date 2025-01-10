@@ -110,11 +110,11 @@ const oldAct = {
 
 const newAct: Act = {
   id: "ove-new-1",
-  object: "Nya Bostadsvägen 333:12",
+  object: "Nya Fritidsstigen 333:12",
   belongsToCustomer: ["670329-2133"],
   new: true,
-  valuation: 4500000,
-  mortgageDeed: 3000000,
+  valuation: 1000000,
+  mortgageDeed: 100000,
   contractType: "Hypotekslån",
   energyClass: "A",
   usedInCalculations: true,
@@ -122,7 +122,29 @@ const newAct: Act = {
   loans: [
     {
       id: "nytt-15-12345-11111",
-      debt: 4000000,
+      debt: 500000,
+      periodIndex: 0,
+      startDate: undefined,
+      amortization: 2000,
+    },
+  ],
+};
+
+const snapNewAct: Act = {
+  id: "ove-new-1",
+  object: "Nya Fritidsstigen 333:12",
+  belongsToCustomer: ["670329-2133"],
+  new: true,
+  valuation: 1000000,
+  mortgageDeed: 100000,
+  contractType: "Hypotekslån",
+  energyClass: "A",
+  usedInCalculations: true,
+  interestRates: [4.05, 3.22, 2.86, 3.19, 3.18, 3.42, 3.39],
+  loans: [
+    {
+      id: "nytt-15-12345-11111",
+      debt: 500000,
       periodIndex: 0,
       startDate: undefined,
       amortization: 2000,
@@ -156,7 +178,7 @@ const useEconomicPlanState = create<EconomicPlanState>((set) => ({
         };
       }),
     acts: [{ ...oldAct }, { ...newAct }],
-    snapshots: [{ ...oldAct }, { ...newAct }],
+    snapshots: [{ ...snapNewAct }],
     actsUpdated: false,
     insertAct: (act) =>
       set((state) => {

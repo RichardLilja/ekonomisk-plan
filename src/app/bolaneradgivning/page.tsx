@@ -1,6 +1,7 @@
 "use client";
 
 import useUserInterfaceState from "@/stores/ui-store";
+import { TextArea } from "@/ui/components/atoms/text-area";
 import BottomPanel from "@/ui/components/layout/bottom-panel";
 import Keyboard from "@/ui/components/layout/keyboard";
 import Overlay from "@/ui/components/layout/overlay";
@@ -10,7 +11,7 @@ import Sidebar, {
 } from "@/ui/components/layout/sidebar";
 import ActsSection from "@/ui/components/sections/acts-section";
 import CustomerEconomyBottomPanelSection from "@/ui/components/sections/bottom-panel/bottom-panel-customer-economy";
-import DisclaimerSection from "@/ui/components/sections/disclaimer-section";
+import CounsellingSection from "@/ui/components/sections/counselling-section";
 import NewLoanSection from "@/ui/components/sections/new-loan-section";
 import OverviewSection from "@/ui/components/sections/overview-section";
 import PageHeader from "@/ui/components/sections/page/page-header";
@@ -48,7 +49,7 @@ export default function Page() {
           <ActsSection ref={slides[2]} />
           <PageSectionSeparator />
           <NewLoanSection ref={slides[3]} />
-          <DisclaimerSection ref={slides[4]} />
+          <CounsellingSection ref={slides[4]} />
         </article>
         <div inert={overlay ? false : true}>
           <Sidebar>
